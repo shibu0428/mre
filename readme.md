@@ -8,12 +8,10 @@ Numpy 1.25.1
 
 # Usage
 
-DEMOの実行方法など、"hoge"の基本的な使い方を説明する
-
 ```bash
-git clone https://github.com/hoge/~
-cd examples
-python 未実装
+git clone https://github.com/shibu0428/mre.git
+cd mre
+//python 未実装
 ```
 
 # Note
