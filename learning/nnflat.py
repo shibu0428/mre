@@ -45,7 +45,7 @@ Lnum=Lnum_e-Lnum_s
 #frameの設定
 fra_s=0
 fra_e=50
-fra_sep=10
+fra_sep=2
 fnum=int((fra_e-fra_s)/fra_sep)
 np_data = dl.dataloading(fp,labels_map,Lnum_s,Lnum_e,fra_s,fra_e,fra_sep)
 
