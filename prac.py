@@ -1,6 +1,6 @@
 import numpy as np
 import lib.readfile as rf
-import partsset as ps
+import lib.partsset as ps
 import lib.sound.sound as mp3
 
 fp='dataset/sample/sample_int.txt'
