@@ -14,7 +14,23 @@ from torchvision.transforms import ToTensor
 from torchvision.datasets import FashionMNIST
 import torchsummary
 
+#自作関数軍
+import sys
+sys.path.append('..')
+from lib import readfile as rf
+from lib import partsset as ps
+import dataload as dl
 
+#ファイルパス、種類クラスの親まで,/入り
+fp="../dataset/0430/"
+# クラス番号とクラス名
+#label_map.keys()
+#"suburi"=label_map.get(1)
+labels_map = {
+    0: "walk",
+    1: "suburi",
+    2: "udehuri",
+}
 
 #cudaの準備
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
@@ -22,17 +38,39 @@ print(device)
 print(torch.cuda.is_available())
 
 #データ読み込み
-np_data = np.load('np_savenpy_cut.npy')  # 読み込み
-np_data_label = np.load('np_savenpy_cut_label.npy')  # 読み込み
+#ファイル添え字の設定
+Lnum_s=0
+Lnum_e=10
+Lnum=Lnum_e-Lnum_s
+#frameの設定
+fra_s=0
+fra_e=50
+fra_sep=10
+fnum=int((fra_e-fra_s)/fra_sep)
+np_data = dl.dataloading(fp,labels_map,Lnum_s,Lnum_e,fra_s,fra_e,fra_sep)
+
+#labelの添え字確認
+np_data_label=np.zeros((Lnum*fnum*len(labels_map)))
+for i in range(len(labels_map)):
+    np_data_label[(i)*Lnum*fnum:(i+1)*Lnum*fnum] = i
 
 t_data = torch.from_numpy(np_data)
 print(t_data.shape)
 t_data_label = torch.from_numpy(np_data_label)
 print(t_data_label.shape)
-# data読み込み
 
-np_Tdata = np.load('np_savenpy_cut_test.npy')  # 読み込み
-np_Tdata_label = np.load('np_savenpy_cut_label_test.npy')  # 読み込み
+#ファイル添え字の設定
+Tnum_s=10
+Tnum_e=15
+Tnum=Tnum_e-Tnum_s
+
+np_Tdata = dl.dataloading(fp,labels_map,Tnum_s,Tnum_e,fra_s,fra_e,fra_sep)
+
+#labelの添え字確認
+np_Tdata_label=np.zeros((Tnum*fnum*len(labels_map)))
+for i in range(len(labels_map)):
+    np_Tdata_label[(i)*Tnum*fnum:(i+1)*Tnum*fnum] = i
+
 t_Tdata = torch.from_numpy(np_Tdata)
 print(t_Tdata.shape)
 t_Tdata_label = torch.from_numpy(np_Tdata_label)
@@ -64,19 +102,7 @@ print(f'学習データ数: {len(dsL)}  テストデータ数: {len(dsT)}')
 
 
 
-# クラス番号とクラス名
-labels_map = {
-    0: "T-Shirt",
-    1: "Trouser",
-    2: "Pullover",
-    3: "Dress",
-    4: "Coat",
-    5: "Sandal",
-    6: "Shirt",
-    7: "Sneaker",
-    8: "Bag",
-    9: "Ankle Boot",
-}
+
 
 # 1epoch の学習を行う関数
 #
@@ -87,6 +113,7 @@ def train(model, lossFunc, optimizer, dl):
     for i, (X, lab) in enumerate(dl):
         lab=lab.long()
         X, lab = X.to(device), lab.to(device)
+        X = X.float()  # 入力データをFloat型に変換
         Y = model(X)           # 一つのバッチ X を入力して出力 Y を計算
         loss = lossFunc(Y, lab) # 正解ラベル lab に対する loss を計算
         optimizer.zero_grad()   # 勾配をリセット
@@ -108,6 +135,7 @@ def evaluate(model, lossFunc, dl):
     for i, (X, lab) in enumerate(dl):
         lab=lab.long()
         X, lab = X.to(device), lab.to(device)
+        X = X.float()  # 入力データをFloat型に変換
         Y = model(X)           # 一つのバッチ X を入力して出力 Y を計算
         loss = lossFunc(Y, lab)  # 正解ラベル lab に対する loss を計算
         n += len(X)

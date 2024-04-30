@@ -20,7 +20,7 @@ def  readfile2np(fp):
 def parser_q4xyz(data):
     if data.size == len(data) * 27 * 7:
         reshaped_data = data.reshape(len(data), 27, 7)
-        print("parse: ",reshaped_data.shape)
+        #print("parse: ",reshaped_data.shape)
         return reshaped_data
     else:
         print("エラー: 元のデータの要素数と新しい形状の要素数が一致しません。")
@@ -38,8 +38,12 @@ def separate(dofdata):
 def file_sep(fp):
     return separate(parser_q4xyz(readfile2np(fp)))
 
+
+
+
 #debug用
 if __name__ == "__main__":
+    '''
     data=readfile2np('sample_int.txt')
     print("1frameのデータ数",len(data[0]))
     print('data数',len(data))
@@ -47,3 +51,9 @@ if __name__ == "__main__":
     q,xyz=separate(parse_data)
     print(q.astype(int))
     print(xyz.shape)
+    '''
+    fp='../dataset/sample/sample_int.txt'
+    q,xyz=file_sep(fp)
+    print(q.shape)
+    q2=cut_frame(q,0,1)
+    print(q2.shape)
