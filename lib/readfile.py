@@ -38,7 +38,7 @@ def separate(dofdata):
 def file_sep(fp):
     return separate(parser_q4xyz(readfile2np(fp)))
 
-
+#debug用
 if __name__ == "__main__":
     data=readfile2np('sample_int.txt')
     print("1frameのデータ数",len(data[0]))
