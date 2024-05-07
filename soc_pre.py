@@ -25,6 +25,7 @@ max_frame=max_sec*30
 sum=0
 flag=0
 n=0
+n_max=16
 flames=1
 ijou_time=time.time()
 last_time = time.time()
@@ -47,6 +48,8 @@ while True:
             print(f"{n} file start")
             winsound.Beep(860, 800)
             start_time=time.time()
+            if n>n_max:
+                exit()
             continue
         
         with open(outfile+str(n)+'.txt', mode='a') as f:

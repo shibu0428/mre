@@ -20,17 +20,13 @@ sys.path.append('..')
 from lib import readfile as rf
 from lib import partsset as ps
 import dataload as dl
-
+import param as par
 #ファイルパス、種類クラスの親まで,/入り
-fp="../dataset/0430/"
+fp=par.fp
 # クラス番号とクラス名
 #label_map.keys()
 #"suburi"=label_map.get(1)
-labels_map = {
-    0: "walk",
-    1: "suburi",
-    2: "udehuri",
-}
+labels_map = par.motions
 
 #cudaの準備
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
@@ -39,14 +35,22 @@ print(torch.cuda.is_available())
 
 #データ読み込み
 #ファイル添え字の設定
-Lnum_s=0
-Lnum_e=10
+Lnum_s=par.learn_par["Lnum_s"]
+Lnum_e=par.learn_par["Lnum_e"]
 Lnum=Lnum_e-Lnum_s
+
+Tnum_s=par.learn_par["Tnum_s"]
+Tnum_e=par.learn_par["Tnum_e"]
+Tnum=Tnum_e-Tnum_s
+
 #frameの設定
-fra_s=0
-fra_e=120
-fra_sep=1
+fra_s=par.learn_par["fra_s"]
+fra_e=par.learn_par["fra_e"]
+fra_sep=par.learn_par["fra_seq"]
 fnum=int((fra_e-fra_s)/fra_sep)
+
+#データロード開始
+print("data load now!")
 np_data = dl.dataloading(fp,labels_map,Lnum_s,Lnum_e,fra_s,fra_e,fra_sep)
 
 #labelの添え字確認
@@ -58,11 +62,6 @@ t_data = torch.from_numpy(np_data)
 print(t_data.shape)
 t_data_label = torch.from_numpy(np_data_label)
 print(t_data_label.shape)
-
-#ファイル添え字の設定
-Tnum_s=10
-Tnum_e=15
-Tnum=Tnum_e-Tnum_s
 
 np_Tdata = dl.dataloading(fp,labels_map,Tnum_s,Tnum_e,fra_s,fra_e,fra_sep)
 
@@ -76,8 +75,6 @@ print(t_Tdata.shape)
 t_Tdata_label = torch.from_numpy(np_Tdata_label)
 print(t_Tdata_label.shape)
 # data読み込み
-
-
 
 
 class dataset_class(Dataset):
@@ -98,11 +95,6 @@ dsT = dataset_class(t_Tdata,t_Tdata_label)
 dlL = DataLoader(dsL, batch_size=10, shuffle=True)
 dlT = DataLoader(dsT, batch_size=10, shuffle=False)
 print(f'学習データ数: {len(dsL)}  テストデータ数: {len(dsT)}')
-
-
-
-
-
 
 # 1epoch の学習を行う関数
 #
@@ -170,75 +162,6 @@ def printdata():
   print(f'# テストデータに対する損失: {loss2:.5f}  識別率: {rrate:.4f}')
   plt.show()
 
-
-
-  # 2層ニューラルネットを定義するクラス
-#
-class MLP2(nn.Module):
-
-    # コンストラクタ． D: 入力次元数， H: 隠れ層ニューロン数， K: クラス数
-    def __init__(self, D, H, K):
-        super(MLP2, self).__init__()
-        # 4次元テンソルで与えられる入力を2次元にする変換
-        self.flatten = nn.Flatten()
-        # 入力 => 隠れ層
-        self.fc1 = nn.Sequential(
-            nn.Linear(D, H), nn.ReLU()
-        )
-        # 隠れ層 => 出力層
-        self.fc2 = nn.Linear(H, K) # 出力層には活性化関数を指定しない
-
-    # モデルの出力を計算するメソッド
-    def forward(self, X):
-        X = self.flatten(X)
-        X = self.fc1(X)
-        X = self.fc2(X)
-        return X
-    
-    ##### 学習の実行 #####
-
-class MLP3(nn.Module):
-
-    # コンストラクタ． D: 入力次元数， H1, H2: 隠れ層ニューロン数， K: クラス数
-    def __init__(self, D, H1, H2,H3,H4,H5, K):
-        super(MLP3, self).__init__()
-        # 4次元テンソルで与えられる入力を2次元にする変換
-        self.flatten = nn.Flatten()
-        # 入力 => 隠れ層1
-        self.fc1 = nn.Sequential(
-            nn.Linear(D, H1), nn.ReLU()
-        )
-        ### 続きを自分で書いてね ###
-        # 隠れ層1から隠れ層2へ
-        self.fc2 = nn.Sequential(
-            nn.Linear(H1,H2),nn.ReLU()
-        )
-        self.fc3 = nn.Sequential(
-            nn.Linear(H2,H3),nn.ReLU()
-        )
-        self.fc4 = nn.Sequential(
-            nn.Linear(H3,H4),nn.ReLU()
-        )
-        self.fc5 = nn.Sequential(
-            nn.Linear(H4,H5),nn.ReLU()
-        )
-
-        # 隠れ層 => 出力層
-        self.fc6 = nn.Linear(H5, K) # 出力層には活性化関数を指定しない
-
-
-        # モデルの出力を計算するメソッド
-    def forward(self, X):
-        X = self.flatten(X)
-        X = self.fc1(X)
-        X = self.fc2(X)
-        X = self.fc3(X)
-        X = self.fc4(X)
-        X = self.fc5(X)
-        X = self.fc6(X)
-
-        return X
-
 class MLP4(nn.Module):
 
     # コンストラクタ． D: 入力次元数， H1, H2: 隠れ層ニューロン数， K: クラス数
@@ -250,7 +173,6 @@ class MLP4(nn.Module):
         self.fc1 = nn.Sequential(
             nn.Linear(D, H1), nn.Sigmoid()
         )
-        ### 続きを自分で書いてね ###
         # 隠れ層1から隠れ層2へ
         self.fc2 = nn.Sequential(
             nn.Linear(H1,H2), nn.Sigmoid()
