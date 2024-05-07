@@ -192,7 +192,7 @@ class MLP4(nn.Module):
 
 
 # ネットワークモデル
-net = MLP4(t_data.size(1)*t_data.size(2)*t_data.size(3),4096,4096, 3).to(device)
+net = MLP4(t_data.size(1)*t_data.size(2)*t_data.size(3),4096,4096, 9).to(device)
 #torchsummary.summary(net, (1, 28, 28))
 print(net)
 
