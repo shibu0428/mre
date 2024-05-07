@@ -44,7 +44,7 @@ Lnum_e=10
 Lnum=Lnum_e-Lnum_s
 #frameの設定
 fra_s=0
-fra_e=20
+fra_e=120
 fra_sep=1
 fnum=int((fra_e-fra_s)/fra_sep)
 np_data = dl.dataloading(fp,labels_map,Lnum_s,Lnum_e,fra_s,fra_e,fra_sep)
@@ -270,7 +270,7 @@ class MLP4(nn.Module):
 
 
 # ネットワークモデル
-net = MLP4(t_data.size(1)*t_data.size(2)*t_data.size(3),64,64, 3).to(device)
+net = MLP4(t_data.size(1)*t_data.size(2)*t_data.size(3),4096,4096, 3).to(device)
 #torchsummary.summary(net, (1, 28, 28))
 print(net)
 
