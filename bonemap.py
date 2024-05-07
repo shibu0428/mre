@@ -1,6 +1,6 @@
 #変数定義import用ファイル
 #bone_mapはボーンの名称を添え字番号で表現している
-#
+#parent_pathは親情報を記録している
 
 bone_map = [
     "Hips", #0
