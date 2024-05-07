@@ -15,7 +15,6 @@ cd mre
 
 # Note
 これは個人用、自分のために書いてる
-githubもプライベートのはず
 # Author
 
 # License
