@@ -55,5 +55,3 @@ if __name__ == "__main__":
     fp='../dataset/sample/sample_int.txt'
     q,xyz=file_sep(fp)
     print(q.shape)
-    q2=cut_frame(q,0,1)
-    print(q2.shape)
