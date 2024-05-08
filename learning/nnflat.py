@@ -18,9 +18,13 @@ import torchsummary
 import sys
 sys.path.append('..')
 from lib import readfile as rf
+#partsのセットを行う
 from lib import partsset as ps
+#データをファイルから読み込むためのローダ
 import dataload as dl
+#motionの種類や使用するファイル数などのパラメータ
 import param as par
+
 #ファイルパス、種類クラスの親まで,/入り
 fp=par.fp
 # クラス番号とクラス名
@@ -57,6 +61,7 @@ np_data = dl.dataloading(fp,labels_map,Lnum_s,Lnum_e,fra_s,fra_e,fra_sep)
 np_data_label=np.zeros((Lnum*fnum*len(labels_map)))
 for i in range(len(labels_map)):
     np_data_label[(i)*Lnum*fnum:(i+1)*Lnum*fnum] = i
+print(np_data_label)
 
 t_data = torch.from_numpy(np_data)
 print(t_data.shape)
