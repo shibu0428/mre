@@ -9,7 +9,7 @@
 
 
 
-#ここにモーション名ライブラリを作成 key=motion名 val=ファイル数
+#ここにモーション名ライブラリを作成 
 fp="../dataset/"
 motions={
     0:"walk",
