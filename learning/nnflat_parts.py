@@ -53,23 +53,38 @@ fra_e=par.learn_par["fra_e"]
 fra_sep=par.learn_par["fra_seq"]
 fnum=int((fra_e-fra_s)/fra_sep)
 
+
+parts_cut=par.parts_option
+parts_option_dict={
+    0:ps.full_body,
+    1:ps.upper_body,
+    2:ps.lower_body,
+    3:ps.left_arm,
+    4:ps.right_arm,
+    5:ps.left_leg,
+    6:ps.right_leg,
+}
+
+
 #データロード開始
 print("data load now!")
-np_data = dl.dataloading(fp,labels_map,Lnum_s,Lnum_e,fra_s,fra_e,fra_sep)
-
+#--------
+np_Ldata = dl.dataloading(fp,labels_map,Lnum_s,Lnum_e,fra_s,fra_e,fra_sep)
+np_Ldata = parts_option_dict[parts_cut](np_Ldata)
 #labelの添え字確認
-np_data_label=np.zeros((Lnum*fnum*len(labels_map)))
+np_Ldata_label=np.zeros((Lnum*fnum*len(labels_map)))
 for i in range(len(labels_map)):
-    np_data_label[(i)*Lnum*fnum:(i+1)*Lnum*fnum] = i
-print(np_data_label)
+    np_Ldata_label[(i)*Lnum*fnum:(i+1)*Lnum*fnum] = i
 
-t_data = torch.from_numpy(np_data)
+t_data = torch.from_numpy(np_Ldata)
 print(t_data.shape)
-t_data_label = torch.from_numpy(np_data_label)
+t_data_label = torch.from_numpy(np_Ldata_label)
 print(t_data_label.shape)
 
-np_Tdata = dl.dataloading(fp,labels_map,Tnum_s,Tnum_e,fra_s,fra_e,fra_sep)
 
+#--------
+np_Tdata = dl.dataloading(fp,labels_map,Tnum_s,Tnum_e,fra_s,fra_e,fra_sep)
+np_Tdata = parts_option_dict[parts_cut](np_Tdata)
 #labelの添え字確認
 np_Tdata_label=np.zeros((Tnum*fnum*len(labels_map)))
 for i in range(len(labels_map)):
@@ -79,7 +94,7 @@ t_Tdata = torch.from_numpy(np_Tdata)
 print(t_Tdata.shape)
 t_Tdata_label = torch.from_numpy(np_Tdata_label)
 print(t_Tdata_label.shape)
-# data読み込み
+#-------
 
 
 class dataset_class(Dataset):
