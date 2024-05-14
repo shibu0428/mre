@@ -34,3 +34,16 @@ learn_par={
     "fra_e":120, #使用するフレームのエンド
     "fra_seq":20,#セクションのフレーム数
 }
+
+#parts_cutを行うときのオプション
+#nnflat_parts.pyを実行
+parts_option=0
+'''
+0:"full_body"
+1:"upper_body"
+2:"lower_body"
+3:"left_arm"
+4:"right_arm"
+5:"left_leg"
+6:"right_leg"
+'''
