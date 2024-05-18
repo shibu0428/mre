@@ -235,3 +235,9 @@ for t in range(1, nepoch+1):
     if(t%10==0):
         print(f'{t}   {lossL:.5f}   {lossT:.5f}   {rateL:.4f}   {rateT:.4f}')
 printdata()
+
+if par.model_save==0:
+    exit(0)
+
+torch.save(net.state_dict(), par.save_name)
+print('model saved')
