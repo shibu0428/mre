@@ -1,9 +1,14 @@
 import socket
 import time
 import struct
-import binascii
-import winsound
 import numpy as np
+
+#torch関連の読み込み
+import torch
+import torch.nn as nn
+from torch.utils.data import Dataset, DataLoader
+from torchvision.transforms import ToTensor
+import torchsummary
 
 #自作関数読み込み
 import param_soc_real as par
@@ -29,6 +34,12 @@ in_data=np.empty((par.nframes,27,4))
 #データがそろうまではmodel読み込みをスキップ
 flag=0
 
+
+
+model = Model()
+#モデルを読み込む
+model.load_state_dict(torch.load("model.pth"))
+
 while True:
     try:
         # データを受信
@@ -49,6 +60,7 @@ while True:
         if flag==4:
             print("実装中dao!")
             #ここにモデルに入れて識別するものを構築
+            t_in_data = torch.from_numpy(in_data)
 
             #model実行後にin_dataのframeを前にずらす
             in_data = in_data[[1,2,3,4,4],:,:,:]
