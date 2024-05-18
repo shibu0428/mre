@@ -35,6 +35,10 @@ learn_par={
     "fra_seq":20,#セクションのフレーム数
 }
 
+#学習モデルを保存する=1
+model_save=1
+save_name='model/''model2'+'.pth'
+
 #parts_cutを行うときのオプション
 #nnflat_parts.pyを実行
 parts_option=0

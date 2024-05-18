@@ -1,7 +1,7 @@
 #mocopiの送信側を偽装するクライアントプログラム
 
 import socket
-
+import time
 HOST='localhost'
 PORT=42842
 
@@ -28,3 +28,5 @@ with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
         
         if frames>900:
             frames=0
+        time.sleep(0.033)
+
