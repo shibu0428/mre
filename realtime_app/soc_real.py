@@ -35,8 +35,36 @@ in_data=np.empty((par.nframes,27,4))
 flag=0
 
 
+#学習した時のclass定義と揃える
+class MLP4(nn.Module):
 
-model = Model()
+    # コンストラクタ． D: 入力次元数， H1, H2: 隠れ層ニューロン数， K: クラス数
+    def __init__(self, D, H1, H2,K):
+        super(MLP4, self).__init__()
+        # 4次元テンソルで与えられる入力を2次元にする変換
+        self.flatten = nn.Flatten()
+        # 入力 => 隠れ層1
+        self.fc1 = nn.Sequential(
+            nn.Linear(D, H1), nn.Sigmoid()
+        )
+        # 隠れ層1から隠れ層2へ
+        self.fc2 = nn.Sequential(
+            nn.Linear(H1,H2), nn.Sigmoid()
+        )
+
+        # 隠れ層 => 出力層
+        self.fc2 = nn.Linear(H2, K) # 出力層には活性化関数を指定しない
+
+
+        # モデルの出力を計算するメソッド
+    def forward(self, X):
+        X = self.flatten(X)
+        X = self.fc1(X)
+        X = self.fc2(X)
+
+        return X
+
+model = MLP4()
 #モデルを読み込む
 model.load_state_dict(torch.load("model.pth"))
 
