@@ -63,7 +63,7 @@ class MLP4(nn.Module):
         X = self.fc3(X)
         return X
 
-model = MLP4(par.nframes*par.parts*par.dof,4096,4096, 9)
+model = MLP4(par.nframes*par.parts*par.dof,4096,4096, len(par.motions))
 #モデルを読み込む
 model.load_state_dict(torch.load(par.model_path))
 print(f"UDP 受信開始。ホスト: {host}, ポート: {port}")
@@ -89,7 +89,7 @@ while True:
             t_in_data = torch.from_numpy(in_data).float()
             t_in_data = t_in_data.view(1, -1)
             Y = model(t_in_data)
-            print(Y.argmax(dim=1))
+            print(Y)
             #model実行後にin_dataのframeを前にずらす
             in_data[:-1] = in_data[1:]  # 0番目のデータを捨てて残りを1つ前にシフト
 
