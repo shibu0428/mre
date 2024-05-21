@@ -11,6 +11,7 @@
 
 #ここにモーション名ライブラリを作成 
 fp="../dataset/"
+'''
 motions={
     0:"walk",
     1:"suburi",
@@ -22,7 +23,12 @@ motions={
     7:"scwat",
     8:"fencing_stand",
 }
-
+'''
+motions={
+    0:"suburi",
+    1:"iai",
+    2:"stand_neutral",
+}
 
 
 #学習パラメータ
