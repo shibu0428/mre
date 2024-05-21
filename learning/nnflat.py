@@ -184,7 +184,7 @@ class MLP4(nn.Module):
         )
 
         # 隠れ層 => 出力層
-        self.fc2 = nn.Linear(H2, K) # 出力層には活性化関数を指定しない
+        self.fc3 = nn.Linear(H2, K) # 出力層には活性化関数を指定しない
 
 
         # モデルの出力を計算するメソッド
@@ -192,6 +192,7 @@ class MLP4(nn.Module):
         X = self.flatten(X)
         X = self.fc1(X)
         X = self.fc2(X)
+        X = self.fc3(X)
 
         return X
 
