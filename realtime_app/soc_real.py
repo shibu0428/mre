@@ -14,7 +14,6 @@ import torchsummary
 import param_soc_real as par
 
 
-dof_parts=7 
 host = ''
 port = 52353
 
@@ -25,10 +24,10 @@ udp_socket.bind((host, port))
 # 受信用のバッファーサイズを設定
 buffer_size = 8192
 
-print(f"UDP 受信開始。ホスト: {host}, ポート: {port}")
+
 
 #data=[Nframe][27parts][4dof]
-in_data=np.empty((par.nframes,27,4))
+in_data=np.empty((par.nframes,par.parts,par.dof))
 
 #最初のnframeまでは前側のデータが足りないため
 #データがそろうまではmodel読み込みをスキップ
@@ -53,7 +52,7 @@ class MLP4(nn.Module):
         )
 
         # 隠れ層 => 出力層
-        self.fc2 = nn.Linear(H2, K) # 出力層には活性化関数を指定しない
+        self.fc3 = nn.Linear(H2, K) # 出力層には活性化関数を指定しない
 
 
         # モデルの出力を計算するメソッド
@@ -61,13 +60,13 @@ class MLP4(nn.Module):
         X = self.flatten(X)
         X = self.fc1(X)
         X = self.fc2(X)
-
+        X = self.fc3(X)
         return X
 
-model = MLP4()
+model = MLP4(par.nframes*par.parts*par.dof,4096,4096, 9)
 #モデルを読み込む
-model.load_state_dict(torch.load("model.pth"))
-
+model.load_state_dict(torch.load(par.model_path))
+print(f"UDP 受信開始。ホスト: {host}, ポート: {port}")
 while True:
     try:
         # データを受信
@@ -80,18 +79,19 @@ while True:
         for id_parts,part in enumerate(bnid_list):
             tran_btdt_data = part.split(b'tran')[1:]
             dofdata = tran_btdt_data[0].split(b'btdt')[0]
-            for id_dof,i in enumerate(range(0, 28, 4)):
-                in_data[flag,id_parts,id_dof] = struct.unpack('<f', dofdata[i:i+4])
-                if flag!=4:
-                    flag+=1
+            for id_dof,i in enumerate(range(0, par.dof*4, 4)):
+                in_data[flag,id_parts,id_dof] = struct.unpack('<f', dofdata[i:i+4])[0]
+        if flag<par.nframes-1:
+            flag+=1
 
-        if flag==4:
-            print("実装中dao!")
+        if flag==par.nframes-1:
             #ここにモデルに入れて識別するものを構築
-            t_in_data = torch.from_numpy(in_data)
-
+            t_in_data = torch.from_numpy(in_data).float()
+            t_in_data = t_in_data.view(1, -1)
+            Y = model(t_in_data)
+            print(Y.argmax(dim=1))
             #model実行後にin_dataのframeを前にずらす
-            in_data = in_data[[1,2,3,4,4],:,:,:]
+            in_data[:-1] = in_data[1:]  # 0番目のデータを捨てて残りを1つ前にシフト
 
 
 

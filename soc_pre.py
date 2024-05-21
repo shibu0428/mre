@@ -9,7 +9,7 @@ dof_parts=7 #つかうデータ=0,1,2,3==クォータニオン->dof=4
             #4,5,6=position->dof=7
 
 host = ''
-port = 42842
+port = 52353
 
 outfile=input("output file name?")
 
