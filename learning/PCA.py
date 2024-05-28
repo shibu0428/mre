@@ -67,12 +67,13 @@ print('X.shape:', X.shape)
 _, sval, Vt = np.linalg.svd(X, full_matrices=False)
 eval = sval**2/N
 U = Vt
+'''
 for d in range(D):
     print(f'{d+1}番目の固有値:{eval[d]:.2f}   固有ベクトル:', U[d, :])
     if d>88:
         break
-
-W = U[:2, :]
+'''
+W = U[:20, :]
 print(W.shape)
 print(W)
 Y = X @ W.T # y = Wx の計算
@@ -103,19 +104,17 @@ color_list={
     7:"olive",
     8:"cyan",
 }
-fig, ax = plt.subplots(facecolor="white", figsize=(8, 8))
+fig, ax = plt.subplots(projection='3d',facecolor="white", figsize=(8, 8))
 for i in range(9):
     color=color_list[i]
     for j in range(10):
-        ax.scatter(Y[10*i+j, 0], Y[10*i+j, 1],c=color)
+        ax.scatter(Y[10*i+j, 0], Y[10*i+j, 1],Y[10*i+j,2],c=color)
 #ax.scatter(Y[nList, 0], Y[nList, 1])
 ax.axvline(0, linestyle='-', color='gray')
 ax.axhline(0, linestyle='-', color='gray')
 ax.set_xlim(-8, 8)
 ax.set_ylim(-8, 8)
 ax.set_aspect('equal')
-ax.set_xlabel('$y_1$')
-ax.set_ylabel('$y_2$')
 ax.legend()
 #for n in nList:
     #plt.annotate(f'{n}', (Y[n, 0]+2, Y[n, 1]+2))
