@@ -83,7 +83,7 @@ while True:
                 in_data[flag,id_parts,id_dof] = struct.unpack('<f', dofdata[i:i+4])[0]
         if flag<par.nframes-1:
             flag+=1
-
+        print(flag)
         if flag==par.nframes-1:
             #ここにモデルに入れて識別するものを構築
             t_in_data = torch.from_numpy(in_data).float()
