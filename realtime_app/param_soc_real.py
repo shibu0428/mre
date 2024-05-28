@@ -6,10 +6,16 @@ nframes=20
 parts=27
 dof=4
 motions={
-    0:"suburi",
-    1:"iai",
-    2:"stand_neutral",
+    0:"walk",
+    1:"suburi",
+    2:"udehuri",
+    3:"iai",
+    4:"sit_stop",
+    5:"sit_udehuri",
+    6:"stand_neutral",
+    7:"scwat",
+    8:"fencing_stand",
 }
 #使用するモデルのパス
-model_path="../learning/model/0521_model3data_27_20.pth"
+model_path="../learning/model/0521_model27_20.pth"
 
