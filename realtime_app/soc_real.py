@@ -83,13 +83,13 @@ while True:
                 in_data[flag,id_parts,id_dof] = struct.unpack('<f', dofdata[i:i+4])[0]
         if flag<par.nframes-1:
             flag+=1
-        print(flag)
+        #print(flag)
         if flag==par.nframes-1:
             #ここにモデルに入れて識別するものを構築
             t_in_data = torch.from_numpy(in_data).float()
             t_in_data = t_in_data.view(1, -1)
             Y = model(t_in_data)
-            print(Y)
+            print(Y.argmax(dim=1))
             #model実行後にin_dataのframeを前にずらす
             in_data[:-1] = in_data[1:]  # 0番目のデータを捨てて残りを1つ前にシフト
 
