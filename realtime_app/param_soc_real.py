@@ -17,5 +17,5 @@ motions={
     8:"fencing_stand",
 }
 #使用するモデルのパス
-model_path="../learning/model/0521_model27_20.pth"
+model_path="../learning/model/0529_model27_20.pth"
 
