@@ -117,4 +117,17 @@ ax.set_aspect('equal')
 #for n in nList:
     #plt.annotate(f'{n}', (Y[n, 0]+2, Y[n, 1]+2))
 plt.show()
+
+# 寄与率と累積寄与率
+c = eval / np.sum(eval)
+print()
+print('寄与率:　　', c)
+cc = np.cumsum(c)  # np.cumsum がやってるのは以下と同じ
+'''
+cc = np.empty_like(c)
+cc[0] = c[0]
+for d in range(1, len(c)):
+    cc[d] = cc[d-1] + c[d]
+'''
+print('累積寄与率:', cc)
 #print(fnum)
