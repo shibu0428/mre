@@ -10,8 +10,8 @@
 
 
 #ここにモーション名ライブラリを作成 
-fp="../dataset/"
-
+#fp="../dataset/"
+fp="../realtime_app/dataset2/"
 motions={
     0:"walk",
     1:"suburi",
@@ -19,7 +19,7 @@ motions={
     3:"iai",
     4:"sit_stop",
     5:"sit_udehuri",
-    6:"stand_neutral",
+    6:"stand_nautral",
     7:"scwat",
     8:"fencing_stand",
 }
@@ -34,12 +34,12 @@ motions={
 #学習パラメータ
 learn_par={
     "Lnum_s":0, #学習の添え字スタート　この値を含む添え字から
-    "Lnum_e":15,#この値の添え字(含まない)までを読み込み
-    "Tnum_s":5,#テストの添え字スタート　この値を含む添え字から
+    "Lnum_e":10,#この値の添え字(含まない)までを読み込み
+    "Tnum_s":10,#テストの添え字スタート　この値を含む添え字から
     "Tnum_e":15,#この値の添え字(含まない)までを読み込み
     "fra_s":0,  #使用するフレームのスタート
     "fra_e":120, #使用するフレームのエンド
-    "fra_seq":5,#セクションのフレーム数
+    "fra_seq":20,#セクションのフレーム数
 }
 
 #学習モデルを保存する=1

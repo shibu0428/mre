@@ -70,6 +70,9 @@ print(f"UDP 受信開始。ホスト: {host}, ポート: {port}")
 outfile=input("output file name?")
 n=0
 fr=0
+print("3,2,1")
+time.sleep(3)
+print("start")
 while True:
     try:
         # データを受信
@@ -112,16 +115,13 @@ while True:
             n=n+1
             if n>16:
                 print("お疲れさまでした")
+                udp_socket.close()
                 exit()
             print(n,"番ファイルスタート")
         
         if flag<par.nframes-1:
             flag+=1
-<<<<<<< HEAD
         #print(flag)
-=======
-        
->>>>>>> 04ac9bd08625d2cc7f0e073633d53423ce24f004
         if flag==par.nframes-1:
             #ここにモデルに入れて識別するものを構築
             t_in_data = torch.from_numpy(in_data).float()
