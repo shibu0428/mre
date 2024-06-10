@@ -113,13 +113,6 @@ color_list={
     7:"olive",
     8:"cyan",
 }
-<<<<<<< HEAD
-fig, ax = plt.subplots(facecolor="white", figsize=(8, 8))
-for i in range(9):
-    color=color_list[i]
-    for j in range(10):
-        ax.scatter(Y[10*i+j, 0], Y[10*i+j, 1],c=color)
-=======
 
 # 3Dプロットの作成
 fig = plt.figure()
@@ -130,7 +123,6 @@ for i in range(len(motions)):
     for j in range(fnum):
         #print(i,j,fnum*i+j)
         ax.scatter(Y[fnum*i+j, 0], Y[fnum*i+j, 1],Y[fnum*i+j,2],c=color)
->>>>>>> 12a391692996f7cc7c52302b0b7510ec85e603d4
 #ax.scatter(Y[nList, 0], Y[nList, 1])
 ax.axvline(0, linestyle='-', color='gray')
 ax.axhline(0, linestyle='-', color='gray')
