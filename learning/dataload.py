@@ -28,7 +28,8 @@ def dataload_frame_seq(fpath,set_num_start,set_num_end,start_frame,end_frame,fra
     frames=end_frame-start_frame
     f_num=set_num_end-set_num_start
     n=int(frames/frame_sep)
-    dataset=np.empty((f_num*n,int(frames/n),27,4))
+    #dataset=np.empty((f_num*n,int(frames/n),27,4))
+    dataset=np.empty((f_num*n,frame_sep,27,4))
     for i in range(n):
         sf=start_frame+i*frame_sep
         dataset[i*f_num:(i+1)*f_num]=dataload_1motion(fpath,set_num_start,set_num_end,sf,sf+frame_sep,)
@@ -42,6 +43,7 @@ def dataloading(fpath,dict,set_num_start,set_num_end,start_frame,end_frame,frame
     f_num=set_num_end-set_num_start
     n=int(frames/frame_sep)*f_num
     dataset=np.empty((len(dict)*n,frame_sep,27,4))
+    print(len(dict))
     for i in range(len(dict)):
         fp=fpath+dict.get(i)+"/"+dict.get(i)
         dataset[i*n:i*n+n]=dataload_frame_seq(fp,set_num_start,set_num_end,start_frame,end_frame,frame_sep)
