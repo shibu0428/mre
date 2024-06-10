@@ -73,12 +73,12 @@ for d in range(D):
     if d>88:
         break
 '''
-W = U[:20, :]
+W = U[:3, :]
 print(W.shape)
 print(W)
 Y = X @ W.T # y = Wx の計算
 print(Y.shape)
-print(Y[:5, :]) # 最初の5人分を表示
+print(Y[:, :]) # 最初の5人分を表示
 
 
 motions={
@@ -104,11 +104,11 @@ color_list={
     7:"olive",
     8:"cyan",
 }
-fig, ax = plt.subplots(projection='3d',facecolor="white", figsize=(8, 8))
+fig, ax = plt.subplots(facecolor="white", figsize=(8, 8))
 for i in range(9):
     color=color_list[i]
     for j in range(10):
-        ax.scatter(Y[10*i+j, 0], Y[10*i+j, 1],Y[10*i+j,2],c=color)
+        ax.scatter(Y[10*i+j, 0], Y[10*i+j, 1],c=color)
 #ax.scatter(Y[nList, 0], Y[nList, 1])
 ax.axvline(0, linestyle='-', color='gray')
 ax.axhline(0, linestyle='-', color='gray')
