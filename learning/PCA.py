@@ -37,7 +37,7 @@ Lnum=Lnum_e-Lnum_s
 fra_s=par.learn_par["fra_s"]
 fra_e=par.learn_par["fra_e"]
 fra_sep=par.learn_par["fra_seq"]
-fnum=int((fra_e-fra_s)/fra_sep)
+
 
 #データロード開始
 print("data load now!")
@@ -52,7 +52,7 @@ np_data = dl.dataloading(fp,labels_map,Lnum_s,Lnum_e,fra_s,fra_e,fra_sep)
 n=Lnum_e-Lnum_s
 
 print(np_data.shape)
-flat_data=np.reshape(np_data,(90,20*27*4))
+flat_data=np.reshape(np_data,(len(np_data),len(np_data[0])*27*4))
 #print(flat_data.shape)
 
 # 平均
@@ -67,18 +67,27 @@ print('X.shape:', X.shape)
 _, sval, Vt = np.linalg.svd(X, full_matrices=False)
 eval = sval**2/N
 U = Vt
+<<<<<<< HEAD
 '''
 for d in range(D):
     print(f'{d+1}番目の固有値:{eval[d]:.2f}   固有ベクトル:', U[d, :])
     if d>88:
         break
 '''
-W = U[:20, :]
+W = U[:3, :]
 print(W.shape)
 print(W)
 Y = X @ W.T # y = Wx の計算
 print(Y.shape)
-print(Y[:5, :]) # 最初の5人分を表示
+print(Y[:, :]) # 最初の5人分を表示
+=======
+W = U[3:6, :]
+#print(W.shape)
+#print(W)
+Y = X @ W.T # y = Wx の計算
+print(Y.shape)
+#print(Y[:5, :]) # 最初の5人分を表示
+>>>>>>> 12a391692996f7cc7c52302b0b7510ec85e603d4
 
 
 motions={
@@ -104,18 +113,36 @@ color_list={
     7:"olive",
     8:"cyan",
 }
-fig, ax = plt.subplots(projection='3d',facecolor="white", figsize=(8, 8))
-for i in range(9):
+
+# 3Dプロットの作成
+fig = plt.figure()
+ax = fig.add_subplot(111, projection='3d')
+fnum=int(len(np_data)/len(motions))
+for i in range(len(motions)):
     color=color_list[i]
-    for j in range(10):
-        ax.scatter(Y[10*i+j, 0], Y[10*i+j, 1],Y[10*i+j,2],c=color)
+    for j in range(fnum):
+        #print(i,j,fnum*i+j)
+        ax.scatter(Y[fnum*i+j, 0], Y[fnum*i+j, 1],Y[fnum*i+j,2],c=color)
 #ax.scatter(Y[nList, 0], Y[nList, 1])
 ax.axvline(0, linestyle='-', color='gray')
 ax.axhline(0, linestyle='-', color='gray')
 ax.set_xlim(-8, 8)
 ax.set_ylim(-8, 8)
 ax.set_aspect('equal')
-ax.legend()
 #for n in nList:
     #plt.annotate(f'{n}', (Y[n, 0]+2, Y[n, 1]+2))
 plt.show()
+
+# 寄与率と累積寄与率
+c = eval / np.sum(eval)
+print()
+print('寄与率:　　', c)
+cc = np.cumsum(c)  # np.cumsum がやってるのは以下と同じ
+'''
+cc = np.empty_like(c)
+cc[0] = c[0]
+for d in range(1, len(c)):
+    cc[d] = cc[d-1] + c[d]
+'''
+print('累積寄与率:', cc)
+#print(fnum)

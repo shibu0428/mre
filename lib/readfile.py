@@ -23,6 +23,13 @@ def parser_q4xyz(data):
         #print("parse: ",reshaped_data.shape)
         return reshaped_data
     else:
+        
+        print(data.shape)
+        #4dofならそのまま吐き出す
+        if data.size == len(data)*27*4:
+            print("4dofデータと認識")
+            reshaped_data = data.reshape(len(data), 27, 4)
+            return reshaped_data
         print("エラー: 元のデータの要素数と新しい形状の要素数が一致しません。")
         exit()
 
