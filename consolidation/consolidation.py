@@ -28,6 +28,7 @@ motions={
     1:"iai",
     2:"udehuri",
 }
+N=10    #1モーションのデータの数
 max_frames=20   #1データあたりのフレーム数
 n_data=10       #1モーションのデータ数
 parts=27
@@ -39,7 +40,7 @@ dof=4
 #加工用の仮置きでフォルダ作成
 #timestampを手書きで
 
-folder_path='processing/0610/'
+folder_path='processing/0612/'
 if not os.path.isdir(folder_path):
         os.makedirs(folder_path)
 else:
@@ -60,17 +61,14 @@ udp_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 udp_socket.bind((host, port))
 
 # 受信用のバッファーサイズを設定
-buffer_size = 8192
+buffer_size = 4096
 
 
 
 #data=[Nframe][27parts][4dof]
-in_data=np.empty((par.nframes,par.parts,par.dof))
-
-#最初のnframeまでは前側のデータが足りないため
-#データがそろうまではmodel読み込みをスキップ
-flag=0
-
+in_data=np.empty((max_frames,parts,dof))
+#motion_dataset=[data数][Nframe][27parts][4dof]
+motion_dataset=np.empty((len(motions)*N,max_frames,parts,dof))
 
 #学習のclass定義
 class MLP4(nn.Module):
@@ -101,17 +99,17 @@ class MLP4(nn.Module):
         X = self.fc3(X)
         return X
 
-model = MLP4(par.nframes*par.parts*par.dof,4096,4096, len(par.motions))
-#モデルを読み込む
-model.load_state_dict(torch.load(par.model_path))
+model = MLP4(max_frames*parts*dof,4096,4096, len(motions))
 print(f"UDP 受信開始。ホスト: {host}, ポート: {port}")
-outfile=input("output file name?")
 n=0
 fr=0
+motion_id=0
 print("3,2,1")
 time.sleep(3)
 print("start")
 while True:
+    if motion_id == len(motions):
+        break
     try:
         # データを受信
         
@@ -119,7 +117,7 @@ while True:
         #1575byteデータより大きいなら別データのためスキップ
         if(len(data)>1600):continue
         bnid_list = data.split(b'bnid')[1:]
-        with open(outfile+str(n)+'.txt', mode='a') as f:
+        with open(+str(n)+'.txt', mode='a') as f:
             for id_parts,part in enumerate(bnid_list):
                 tran_btdt_data = part.split(b'tran')[1:]
                 dofdata = tran_btdt_data[0].split(b'btdt')[0]
@@ -130,7 +128,7 @@ while True:
             f.write(f"\n")
             f.close()
 
-                
+
         fr=fr+1
         if fr>150:
             fr=0
@@ -140,23 +138,7 @@ while True:
                 udp_socket.close()
                 exit()
             print(n,"番ファイルスタート")
-        
-        if flag<par.nframes-1:
-            flag+=1
-        #print(flag)
-        if flag==par.nframes-1:
-            #ここにモデルに入れて識別するものを構築
-            t_in_data = torch.from_numpy(in_data).float()
-            t_in_data = t_in_data.view(1, -1)
-            Y = model(t_in_data)
-            print(Y.argmax(dim=1))
-            #model実行後にin_dataのframeを前にずらす
-            in_data[:-1] = in_data[1:]  # 0番目のデータを捨てて残りを1つ前にシフト
 
-
-
-                    
-            
     except OSError as e:
         # エラーが発生した場合は表示
         print(f"エラー: {e}")
