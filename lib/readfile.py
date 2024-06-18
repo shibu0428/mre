@@ -5,7 +5,7 @@ import numpy as np
 #パスに入ったデータからすべての要素をnumpy配列に格納
 def  readfile2np(fp):
     data_list = []
-
+    print(fp)
     with open(fp, 'r') as file:
         for line in file:
             # 行からスペースまたはタブで区切られたデータを取得し、floatに変換してリストに追加
@@ -24,7 +24,7 @@ def parser_q4xyz(data):
         return reshaped_data
     else:
         
-        print(data.shape)
+        print(data.size)
         #4dofならそのまま吐き出す
         if data.size == len(data)*27*4:
             print("4dofデータと認識")
@@ -44,6 +44,9 @@ def separate(dofdata):
 #fpからセパレートまでを一括で行う
 def file_sep(fp):
     return separate(parser_q4xyz(readfile2np(fp)))
+
+def xyzq4(fp):
+    return readfile2np(fp)
 
 
 
