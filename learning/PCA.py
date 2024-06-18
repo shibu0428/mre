@@ -67,7 +67,6 @@ print('X.shape:', X.shape)
 _, sval, Vt = np.linalg.svd(X, full_matrices=False)
 eval = sval**2/N
 U = Vt
-<<<<<<< HEAD
 '''
 for d in range(D):
     print(f'{d+1}番目の固有値:{eval[d]:.2f}   固有ベクトル:', U[d, :])
@@ -80,14 +79,6 @@ print(W)
 Y = X @ W.T # y = Wx の計算
 print(Y.shape)
 print(Y[:, :]) # 最初の5人分を表示
-=======
-W = U[3:6, :]
-#print(W.shape)
-#print(W)
-Y = X @ W.T # y = Wx の計算
-print(Y.shape)
-#print(Y[:5, :]) # 最初の5人分を表示
->>>>>>> 12a391692996f7cc7c52302b0b7510ec85e603d4
 
 
 motions={
