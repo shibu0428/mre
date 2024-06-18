@@ -23,7 +23,8 @@ from learning import dataload as dl
 #partsのセットを行う
 from lib import partsset as ps
 
-fp="C:/Users/tomok/mre/dataset/0617/iai/iai0.txt"
+fp="C:/Users/tomok/mre/renshuu0.txt"
+#fp="C:/Users/tomok/mre/dataset/before/iai/iai0.txt"
 wxyz=rf.xyzq4(fp)
 print(wxyz.shape)
 a=wxyz[0]
@@ -44,7 +45,7 @@ three_item_arrays = np.array(three_item_lists)
 # 結果を表示
 print("4種類の配列: ", four_item_arrays)
 print("3種類の配列: ", three_item_arrays)
-xyz_coordinates = three_item_arrays.reshape(-1, 3)[:26]
+xyz_coordinates = three_item_arrays.reshape(-1, 3)[:27]
 
 # 3次元プロット
 fig = plt.figure()

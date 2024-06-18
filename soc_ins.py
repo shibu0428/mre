@@ -38,6 +38,8 @@ while True:
         data, addr = udp_socket.recvfrom(buffer_size)
         #if(len(data)>1600):raise Exception(f)
         with open(outfile+str(n)+'.txt', mode='a') as f:
+            data2=data.split(b'tran')
+            data3=data2.split(b'')
             f.write(str(data))
             f.write(f"\n")
             f.close()
