@@ -13,7 +13,7 @@
 #fp="../dataset/",
 fp="../dataset/0617/"
 motions={
-    0:"suburi",
+    0:"guruguru_stand",
     1:"suburi",
     2:"udehuri",
     3:"iai",
@@ -39,7 +39,7 @@ learn_par={
     "Tnum_e":20,#この値の添え字(含まない)までを読み込み
     "fra_s":0,  #使用するフレームのスタート
     "fra_e":140, #使用するフレームのエンド
-    "fra_seq":10,#セクションのフレーム数
+    "fra_seq":20,#セクションのフレーム数
 }
 
 #学習モデルを保存する=1
