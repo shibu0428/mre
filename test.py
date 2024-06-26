@@ -23,9 +23,9 @@ from learning import dataload as dl
 #partsのセットを行う
 from lib import partsset as ps
 
-fp="C:/Users/tomok/mre/renshuu0.txt"
-#fp="C:/Users/tomok/mre/dataset/before/iai/iai0.txt"
-wxyz=rf.xyzq4(fp)
+fp1="C:/Users/tomok/mre/renshuu0.txt"
+fp2="C:/Users/tomok/mre/dataset/before/iai/iai0.txt"
+wxyz=rf.xyzq4(fp1)
 print(wxyz.shape)
 a=wxyz[0]
 
@@ -41,16 +41,37 @@ for i in range(0, len(a), 7):
 # リストをNumPy配列に変換
 four_item_arrays = np.array(four_item_lists)
 three_item_arrays = np.array(three_item_lists)
-
+t2=three_item_arrays
 # 結果を表示
-print("4種類の配列: ", four_item_arrays)
+#print("4種類の配列: ", four_item_arrays)
 print("3種類の配列: ", three_item_arrays)
 xyz_coordinates = three_item_arrays.reshape(-1, 3)[:27]
 
 # 3次元プロット
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
-ax.plot(xyz_coordinates[:, 0], xyz_coordinates[:, 1], xyz_coordinates[:, 2], marker='o')
+ax.plot(xyz_coordinates[:, 0], xyz_coordinates[:, 1], xyz_coordinates[:, 2], marker='o',color='red')
+
+wxyz=rf.xyzq4(fp2)
+print(wxyz.shape)
+a=wxyz[0]
+
+# 4種類の配列と3種類の配列を保持するためのリスト
+four_item_lists = []
+three_item_lists = []
+
+# データを7つずつ取り出して分割
+for i in range(0, len(a), 7):
+    four_item_lists.append(a[i:i+4])
+    three_item_lists.append(a[i+4:i+7])
+
+# リストをNumPy配列に変換
+four_item_arrays = np.array(four_item_lists)
+three_item_arrays = np.array(three_item_lists)
+print("3種類の配列: ", three_item_arrays)
+ax.plot(xyz_coordinates[:, 0], xyz_coordinates[:, 1], xyz_coordinates[:, 2], marker='o',color='blue')
+
+print("差: ", three_item_arrays[:26]-t2)
 
 # ラベルの設定
 ax.set_xlabel('X Label')
