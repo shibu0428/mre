@@ -70,42 +70,46 @@ dev=[
 #データロード開始
 print("data load now!")
 #np_data = dl.dataloading(fp,labels_map,Lnum_s,Lnum_e,fra_s,fra_e,fra_sep)
-np_data=np.zeros((120,40,7*6))
-np_data_label=np.zeros(120)
-np_Tdata=np.zeros((60,40,7*6))
-np_Tdata_label=np.zeros(60)
+np_data=np.zeros((240,20,7*6))
+np_data_label=np.zeros(240)
+np_Tdata=np.zeros((120,20,7*6))
+np_Tdata_label=np.zeros(120)
 
-np_parts=np.zeros((60,40,7))
+np_parts=np.zeros((120,20,7))
 frame_check=0
 data_check=0
 for i in range(3):
     for j in range(6):
         frame_check=0
         data_check=0
+        flag=0
         with open('../dataset/ana0626/'+motions[i]+'_'+dev[j]+'.csv') as f:
             reader = csv.reader(f)
             for row in reader:
-                if data_check==0 and frame_check==0:
+                if flag==0:
+                    flag=1
                     continue
                 np_parts[data_check][frame_check]=row[1:]
                 frame_check+=1
-                if frame_check==40:
+                if frame_check==20:
                     frame_check=0
                     data_check+=1
-                    if data_check==60:
+                    if data_check==120:
+                        data_check=0
                         continue
-        print(np_data[40*i:40*i+40,0:40,j*7:j*7+7].shape)
-        np_data[40*i:40*i+40,0:40,j*7:j*7+7]=np_parts[0:40]
-        np_Tdata[20*i:20*i+20,0:40,j*7:j*7+7]=np_parts[40:60]
+                
+        #print(np_parts)
+        np_data[80*i:80*i+80,0:20,j*7:j*7+7]=np_parts[0:80]
+        np_Tdata[40*i:40*i+40,0:20,j*7:j*7+7]=np_parts[80:120]
 
 
-
-np_data_label[0:40]=0
-np_Tdata_label[0:20]=0
-np_data_label[40:80]=1
-np_Tdata_label[20:40]=1
-np_data_label[80:120]=2
-np_Tdata_label[40:60]=2
+#print(np_data)
+np_data_label[0:80]=0
+np_Tdata_label[0:40]=0
+np_data_label[80:160]=1
+np_Tdata_label[40:80]=1
+np_data_label[160:240]=2
+np_Tdata_label[80:120]=2
     
 
 
@@ -232,7 +236,7 @@ class MLP4(nn.Module):
 
 
 # ネットワークモデル
-net = MLP4(40*42,4096,4096, 3).to(device)
+net = MLP4(20*42,512,512, 3).to(device)
 #torchsummary.summary(net, (1, 28, 28))
 print(net)
 
