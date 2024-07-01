@@ -23,36 +23,17 @@ from lib import readfile as rf
 from lib import partsset as ps
 #データをファイルから読み込むためのローダ
 import dataload as dl
-#motionの種類や使用するファイル数などのパラメータ
-import param as par
 
-#ファイルパス、種類クラスの親まで,/入り
-fp=par.fp
 # クラス番号とクラス名
 #label_map.keys()
 #"suburi"=label_map.get(1)
-labels_map = par.motions
 
 #cudaの準備
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 print(device)
 print(torch.cuda.is_available())
 
-#データ読み込み
-#ファイル添え字の設定
-Lnum_s=par.learn_par["Lnum_s"]
-Lnum_e=par.learn_par["Lnum_e"]
-Lnum=Lnum_e-Lnum_s
-
-Tnum_s=par.learn_par["Tnum_s"]
-Tnum_e=par.learn_par["Tnum_e"]
-Tnum=Tnum_e-Tnum_s
-
-#frameの設定
-fra_s=par.learn_par["fra_s"]
-fra_e=par.learn_par["fra_e"]
-fra_sep=par.learn_par["fra_seq"]
-fnum=int((fra_e-fra_s)/fra_sep)
+model_save=1
 
 motions=[
     "udehuri",
@@ -259,8 +240,8 @@ for t in range(1, nepoch+1):
     if(t%10==0):
         print(f'{t}   {lossL:.5f}   {lossT:.5f}   {rateL:.4f}   {rateT:.4f}')
 printdata()
-if par.model_save==0:
+if model_save==0:
     exit(0)
 
-torch.save(net.state_dict(), par.save_name)
+torch.save(net.state_dict(),'rawlearn.path')
 print('model saved')
