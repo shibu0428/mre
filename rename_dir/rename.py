@@ -12,7 +12,6 @@ def partial_match_index(lst, word):
 
 def rename_csv():
     path = '*.csv'
-    i = 1
     motions=[
         "guruguru_stand",
         "suburi",
@@ -41,20 +40,16 @@ def rename_csv():
 
     # txtファイルを取得する
     flist = glob.glob(path)
-    print('変更前')
-    print(flist)
-
     # ファイル名を一括で変更する
     for file in flist:
         n_dev=partial_match_index(dev, file)
         if n_dev==-1:
+            print("デバイス名エラー")
             continue
         os.rename(file, motions[int(n_motions)]+'_' + dev[int(n_dev)] + '.csv')
-        i+=1
 
     list = glob.glob(path)
-    print('変更後')
-    print(list)
+    print('変更完了')
 
 if __name__ == "__main__":
     rename_csv()

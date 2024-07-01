@@ -38,6 +38,7 @@ for motion in motions:
     print("フォルダ名 "+folder_path)
     print(motions[motion])
     os.mkdir(folder_path+motions[motion])
+    
 
 
 
