@@ -34,12 +34,15 @@ print(device)
 print(torch.cuda.is_available())
 
 model_save=1
+onedata_frames=20
+
 
 motions=[
     "udehuri",
     "suburi",
     "iai"
 ]
+
 dev=[
     "0D7A2",
     "0FC42",
@@ -50,7 +53,6 @@ dev=[
 ]
 #データロード開始
 print("data load now!")
-#np_data = dl.dataloading(fp,labels_map,Lnum_s,Lnum_e,fra_s,fra_e,fra_sep)
 np_data=np.zeros((240,20,7*6))
 np_data_label=np.zeros(240)
 np_Tdata=np.zeros((120,20,7*6))
