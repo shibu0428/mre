@@ -25,17 +25,6 @@ from lib import partsset as ps
 import dataload as dl
 
 # クラス番号とクラス名
-#label_map.keys()
-#"suburi"=label_map.get(1)
-
-#cudaの準備
-device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
-print(device)
-print(torch.cuda.is_available())
-
-model_save=1
-onedata_frames=20
-
 
 motions=[
     "udehuri",
@@ -51,18 +40,37 @@ dev=[
     "121DE",
     "13D54"
 ]
+
+#cudaの準備
+device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
+print(device)
+print(torch.cuda.is_available())
+
+model_save=1        #モデルを保存するかどうか 1なら保存
+data_frames=20      #学習1dataあたりのフレーム数
+all_data_frames=2400#元データの読み取る最大フレーム数
+
+data_cols=7*len(dev)       #1dataの1フレームのデータ数
+
+data_n=int(all_data_frames/data_frames) #1モーションのデータ数
+all_data_n=data_n*len(motions)  #全データ数
+
+learn_n=80  #１モーションの学習のデータ数
+test_n=data_n-learn_n #１モーションのテストのデータ数
+
+
 #データロード開始
 print("data load now!")
-np_data=np.zeros((240,20,7*6))
-np_data_label=np.zeros(240)
-np_Tdata=np.zeros((120,20,7*6))
-np_Tdata_label=np.zeros(120)
+np_data=np.zeros((learn_n*len(motions),data_frames,data_cols))
+np_data_label=np.zeros(learn_n*len(motions))
+np_Tdata=np.zeros((test_n*len(motions),data_frames,data_cols))
+np_Tdata_label=np.zeros(test_n*len(motions))
 
-np_parts=np.zeros((120,20,7))
+np_parts=np.zeros((data_n,data_frames,7))
 frame_check=0
 data_check=0
-for i in range(3):
-    for j in range(6):
+for i in range(len(motions)):
+    for j in range(len(dev)):
         frame_check=0
         data_check=0
         flag=0
@@ -72,31 +80,26 @@ for i in range(3):
                 if flag==0:
                     flag=1
                     continue
-                np_parts[data_check][frame_check]=row[1:]
+                np_parts[data_check][frame_check]=row[1:]#
                 frame_check+=1
-                if frame_check==20:
+                if frame_check==data_frames:
                     frame_check=0
                     data_check+=1
-                    if data_check==120:
+                    if data_check==data_n:
                         data_check=0
                         continue
                 
         #print(np_parts)
-        np_data[80*i:80*i+80,0:20,j*7:j*7+7]=np_parts[0:80]
-        np_Tdata[40*i:40*i+40,0:20,j*7:j*7+7]=np_parts[80:120]
+        np_data[learn_n*i:learn_n*(i+1),0:data_frames,j*7:(j+1)*7]=np_parts[0:learn_n]
+        np_Tdata[test_n*i:test_n*(i+1),0:data_frames,j*7:(j+1)*7]=np_parts[learn_n:data_n]
 
 
-#print(np_data)
-np_data_label[0:80]=0
-np_Tdata_label[0:40]=0
-np_data_label[80:160]=1
-np_Tdata_label[40:80]=1
-np_data_label[160:240]=2
-np_Tdata_label[80:120]=2
-    
+#ラベルセット
+for i in range(len(motions)):
+    np_data_label[learn_n*i:learn_n*(i+1)]=i
+    np_Tdata_label[test_n*i:test_n*(i+1)]=i
 
-
-
+#numpy->torch
 t_data = torch.from_numpy(np_data)
 t_data_label = torch.from_numpy(np_data_label)
 t_Tdata = torch.from_numpy(np_Tdata)
@@ -219,7 +222,7 @@ class MLP4(nn.Module):
 
 
 # ネットワークモデル
-net = MLP4(20*42,512,512, 3).to(device)
+net = MLP4(data_frames*data_cols,512,512, len(motions)).to(device)
 #torchsummary.summary(net, (1, 28, 28))
 print(net)
 
