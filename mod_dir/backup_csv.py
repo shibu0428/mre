@@ -10,46 +10,12 @@ def partial_match_index(lst, word):
             return i
     return -1  # 一致するものがなければ-1を返す
 
-def backup_csv():
-    path = '*.csv'
-    motions=[
-        "guruguru_stand",
-        "suburi",
-        "udehuri",
-        "iai",
-        "sit_stop",
-        "sit_udehuri",
-        "stand_nautral",
-        "scwat",
-        "fencing_stand",
-    ]
-
-    dev=[
-        "0D7A2",
-        "0FC42",
-        "12AA1",
-        "1437E",
-        "121DE",
-        "13D54",
-    ]
-
-    print(motions)
-    n_motions=input("モーションを数字で選択")
-
-
-
+#backup_csv("モーション名","デバイス名","元ファイル名")
+def backup_csv(motion,dev,path):
     # txtファイルを取得する
-    flist = glob.glob(path)
-    # ファイル名を一括で変更する
-    for file in flist:
-        n_dev=partial_match_index(dev, file)
-        if n_dev==-1:
-            print("デバイス名エラー")
-            continue
-        os.rename(file, motions[int(n_motions)]+'_' + dev[int(n_dev)] + '.csv')
-
+    
     list = glob.glob(path)
     print('変更完了')
 
 if __name__ == "__main__":
-    rename_csv()
+    backup_csv("walk","SAMPLE","sample.")
