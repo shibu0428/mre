@@ -27,18 +27,24 @@ import dataload as dl
 # クラス番号とクラス名
 
 motions=[
-    "udehuri",
+    "guruguru_stand",
     "suburi",
-    "iai"
+    "udehuri",
+    "iai",
+    "sit_stop",
+    "sit_udehuri",
+    "stand_nautral",
+    "scwat",
+    "fencing_stand",
 ]
 
 dev=[
     "0D7A2",
-    "0FC42",
-    "12AA1",
-    "1437E",
-    "121DE",
-    "13D54"
+    #"0FC42",
+    #"12AA1",
+    #"1437E",
+    #"121DE",
+    #"13D54"
 ]
 
 #cudaの準備
@@ -46,16 +52,17 @@ device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 print(device)
 print(torch.cuda.is_available())
 
+dataset_path='0703'
 model_save=1        #モデルを保存するかどうか 1なら保存
-data_frames=20      #学習1dataあたりのフレーム数
-all_data_frames=2400#元データの読み取る最大フレーム数
+data_frames=2      #学習1dataあたりのフレーム数
+all_data_frames=2000#元データの読み取る最大フレーム数
 
 data_cols=7*len(dev)       #1dataの1フレームのデータ数
 
 data_n=int(all_data_frames/data_frames) #1モーションのデータ数
 all_data_n=data_n*len(motions)  #全データ数
 
-learn_n=80  #１モーションの学習のデータ数
+learn_n=int(all_data_frames/data_frames*0.3)  #１モーションの学習のデータ数
 test_n=data_n-learn_n #１モーションのテストのデータ数
 
 
@@ -74,11 +81,11 @@ for i in range(len(motions)):
         frame_check=0
         data_check=0
         flag=0
-        with open('../dataset/ana0626/'+motions[i]+'_'+dev[j]+'.csv') as f:
+        with open('../dataset/'+dataset_path+'/'+motions[i]+'_'+dev[j]+'.csv') as f:
             reader = csv.reader(f)
             for row in reader:
-                if flag==0:
-                    flag=1
+                if flag<100:
+                    flag+=1
                     continue
                 np_parts[data_check][frame_check]=row[1:]#
                 frame_check+=1
@@ -167,7 +174,7 @@ def evaluate(model, lossFunc, dl):
 
 ##### 学習結果の表示用関数
 # 学習曲線の表示
-def printdata():
+def printdata(m_size,parts):
   data = np.array(results)
   fig, ax = plt.subplots(1, 2, facecolor='white', figsize=(12, 4))
   ax[0].plot(data[:, 0], data[:, 1], '.-', label='training data')
@@ -182,7 +189,7 @@ def printdata():
   ax[1].set_ylim(0.35, 1.01)
   ax[1].legend()
   ax[1].set_title(f'accuracy')
- 
+  fig.suptitle('modelSize'+str(m_size)+'dev'+str(parts))
 
   # 学習後の損失と識別率
   loss2, rrate = evaluate(net, loss_func, dlL)
@@ -222,7 +229,9 @@ class MLP4(nn.Module):
 
 
 # ネットワークモデル
-net = MLP4(data_frames*data_cols,512,512, len(motions)).to(device)
+fc1=2048
+fc2=4096
+net = MLP4(data_frames*data_cols,fc1,fc2, len(motions)).to(device)
 #torchsummary.summary(net, (1, 28, 28))
 print(net)
 
@@ -244,7 +253,7 @@ for t in range(1, nepoch+1):
     results.append([t, lossL, lossT, rateL, rateT])
     if(t%10==0):
         print(f'{t}   {lossL:.5f}   {lossT:.5f}   {rateL:.4f}   {rateT:.4f}')
-printdata()
+printdata([fc1,fc2],dev)
 if model_save==0:
     exit(0)
 
