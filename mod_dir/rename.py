@@ -11,7 +11,10 @@ def partial_match_index(lst, word):
     return -1  # 一致するものがなければ-1を返す
 
 def rename_csv():
-    path = '*.csv'
+    path = '*'
+    time=input("ファイルの名前の数字のみを入力")
+    ext='.csv'
+    path+=time+ext
     motions=[
         "guruguru_stand",
         "suburi",
@@ -33,7 +36,8 @@ def rename_csv():
         "13D54",
     ]
 
-    print(motions)
+    for i in range(len(motions)):
+        print(str(i)+" = "+motions[i])
     n_motions=input("モーションを数字で選択")
 
 
