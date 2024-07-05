@@ -39,9 +39,9 @@ motions=[
 ]
 
 dev=[
-    "0D7A2",
+    #"0D7A2",
     #"0FC42",
-    #"12AA1",
+    "12AA1",
     #"1437E",
     #"121DE",
     #"13D54"
@@ -229,8 +229,8 @@ class MLP4(nn.Module):
 
 
 # ネットワークモデル
-fc1=2048
-fc2=4096
+fc1=128
+fc2=64
 net = MLP4(data_frames*data_cols,fc1,fc2, len(motions)).to(device)
 #torchsummary.summary(net, (1, 28, 28))
 print(net)
