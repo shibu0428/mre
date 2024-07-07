@@ -49,17 +49,31 @@ dev=[
     #"13D54"
 ]
 
+choice_test_motions=[
+    #"guruguru_stand",
+    #"suburi",
+    "udehuri",
+    #"iai",
+    #"sit_stop",
+    #"sit_udehuri",
+    #"stand_nautral",
+    #"scwat",
+    #"fencing_stand",
+]
+
 model_save=0        #モデルを保存するかどうか 1なら保存
-data_frames=2       #学習1dataあたりのフレーム数
+data_frames=20       #学習1dataあたりのフレーム数
 all_data_frames=2000#元データの読み取る最大フレーム数
 
 data_cols=7*len(dev)       #1dataの1フレームのデータ数
-
-data_n=int(all_data_frames/data_frames)*len(dataset_path) #1モーションのデータ数
+data_n_1file=int(all_data_frames/data_frames)
+data_n=data_n_1file*len(dataset_path) #1モーションのデータ数
 all_data_n=data_n*len(motions)  #全データ数
 
 learn_n=int(all_data_frames/data_frames*0.3)*len(dataset_path)  #１モーションの学習のデータ数 3割を学習に
 test_n=data_n-learn_n #１モーションのテストのデータ数   7割をテストに
+
+choice_mode=1   #テストのチョイスを変更する
 
 #cudaの準備
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
@@ -112,11 +126,28 @@ for i in range(len(motions)):
     np_data_label[learn_n*i:learn_n*(i+1)]=i
     np_Tdata_label[test_n*i:test_n*(i+1)]=i
 
+if choice_mode==1:
+    choice_test_n=data_n-int(all_data_frames/data_frames*0.3)
+    np_choice_Tdata=np.zeros((choice_test_n*len(choice_test_motions),data_frames,data_cols))
+    np_choice_Tdata_label=np.zeros(choice_test_n*len(choice_test_motions))
+    print(choice_test_n,test_n,data_n,learn_n)
+    for i in range(len(choice_test_motions)):
+        choice_i=motions.index(choice_test_motions[i])
+        np_choice_Tdata[i*test_n:(i+1)*test_n]=np_Tdata[choice_i*test_n:(choice_i+1)*test_n]
+        np_choice_Tdata_label[i*choice_test_n:(i+1)*choice_test_n]=choice_i
+
+
+
+
 #numpy->torch
 t_data = torch.from_numpy(np_data)
 t_data_label = torch.from_numpy(np_data_label)
-t_Tdata = torch.from_numpy(np_Tdata)
-t_Tdata_label = torch.from_numpy(np_Tdata_label)
+if choice_mode==0:
+    t_Tdata = torch.from_numpy(np_Tdata)
+    t_Tdata_label = torch.from_numpy(np_Tdata_label)
+else:
+    t_Tdata = torch.from_numpy(np_choice_Tdata)
+    t_Tdata_label = torch.from_numpy(np_choice_Tdata_label)
 
 
 class dataset_class(Dataset):
@@ -131,12 +162,15 @@ class dataset_class(Dataset):
         return len(self.labels)
 
 
+
+
 # データ読み込みの仕組み
 dsL = dataset_class(t_data,t_data_label)
 dsT = dataset_class(t_Tdata,t_Tdata_label)
 dlL = DataLoader(dsL, batch_size=10, shuffle=True)
 dlT = DataLoader(dsT, batch_size=10, shuffle=False)
 print(f'学習データ数: {len(dsL)}  テストデータ数: {len(dsT)}')
+
 
 # 1epoch の学習を行う関数
 #
