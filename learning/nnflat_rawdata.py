@@ -26,16 +26,18 @@ import dataload as dl
 
 # クラス番号とクラス名
 
+dataset_path=["0703","0626"]
+
 motions=[
-    "guruguru_stand",
+    #"guruguru_stand",
     "suburi",
     "udehuri",
     "iai",
-    "sit_stop",
-    "sit_udehuri",
-    "stand_nautral",
-    "scwat",
-    "fencing_stand",
+    #"sit_stop",
+    #"sit_udehuri",
+    #"stand_nautral",
+    #"scwat",
+    #"fencing_stand",
 ]
 
 dev=[
@@ -47,23 +49,22 @@ dev=[
     #"13D54"
 ]
 
-#cudaの準備
-device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
-print(device)
-print(torch.cuda.is_available())
-
-dataset_path='0703'
-model_save=1        #モデルを保存するかどうか 1なら保存
-data_frames=2      #学習1dataあたりのフレーム数
+model_save=0        #モデルを保存するかどうか 1なら保存
+data_frames=2       #学習1dataあたりのフレーム数
 all_data_frames=2000#元データの読み取る最大フレーム数
 
 data_cols=7*len(dev)       #1dataの1フレームのデータ数
 
-data_n=int(all_data_frames/data_frames) #1モーションのデータ数
+data_n=int(all_data_frames/data_frames)*len(dataset_path) #1モーションのデータ数
 all_data_n=data_n*len(motions)  #全データ数
 
-learn_n=int(all_data_frames/data_frames*0.3)  #１モーションの学習のデータ数
-test_n=data_n-learn_n #１モーションのテストのデータ数
+learn_n=int(all_data_frames/data_frames*0.3)*len(dataset_path)  #１モーションの学習のデータ数 3割を学習に
+test_n=data_n-learn_n #１モーションのテストのデータ数   7割をテストに
+
+#cudaの準備
+device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
+print(device)
+print(torch.cuda.is_available())
 
 
 #データロード開始
@@ -73,6 +74,10 @@ np_data_label=np.zeros(learn_n*len(motions))
 np_Tdata=np.zeros((test_n*len(motions),data_frames,data_cols))
 np_Tdata_label=np.zeros(test_n*len(motions))
 
+
+
+#0705未対応
+#ファイル読み込みのフォルダ二個目に注意
 np_parts=np.zeros((data_n,data_frames,7))
 frame_check=0
 data_check=0
@@ -80,21 +85,22 @@ for i in range(len(motions)):
     for j in range(len(dev)):
         frame_check=0
         data_check=0
-        flag=0
-        with open('../dataset/'+dataset_path+'/'+motions[i]+'_'+dev[j]+'.csv') as f:
-            reader = csv.reader(f)
-            for row in reader:
-                if flag<100:
-                    flag+=1
-                    continue
-                np_parts[data_check][frame_check]=row[1:]#
-                frame_check+=1
-                if frame_check==data_frames:
-                    frame_check=0
-                    data_check+=1
-                    if data_check==data_n:
-                        data_check=0
+        for k in range(len(dataset_path)):
+            flag=0
+            with open('../dataset/'+dataset_path[k]+'/'+motions[i]+'_'+dev[j]+'.csv') as f:
+                reader = csv.reader(f)
+                for row in reader:
+                    if flag<100:
+                        flag+=1
                         continue
+                    np_parts[data_check][frame_check]=row[1:]#
+                    frame_check+=1
+                    if frame_check==data_frames:
+                        frame_check=0
+                        data_check+=1
+                        if data_check==data_n:
+                            data_check=0
+                            continue
                 
         #print(np_parts)
         np_data[learn_n*i:learn_n*(i+1),0:data_frames,j*7:(j+1)*7]=np_parts[0:learn_n]
