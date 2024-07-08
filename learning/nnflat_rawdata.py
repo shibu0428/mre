@@ -22,7 +22,7 @@ from lib import readfile as rf
 #partsのセットを行う
 from lib import partsset as ps
 #データをファイルから読み込むためのローダ
-import dataload as dl
+import learning.archive_nn.dataload as dl
 
 # クラス番号とクラス名
 

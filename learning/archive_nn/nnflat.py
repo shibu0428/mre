@@ -21,9 +21,9 @@ from lib import readfile as rf
 #partsのセットを行う
 from lib import partsset as ps
 #データをファイルから読み込むためのローダ
-import dataload as dl
+import learning.archive_nn.dataload as dl
 #motionの種類や使用するファイル数などのパラメータ
-import param as par
+import learning.archive_nn.param as par
 
 #ファイルパス、種類クラスの親まで,/入り
 fp=par.fp

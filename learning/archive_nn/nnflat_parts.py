@@ -17,13 +17,13 @@ import torchsummary
 #自作関数軍
 import sys
 sys.path.append('..')
-from lib import readfile_new26 as rf
+from lib import readfile as rf
 #partsのセットを行う
 from lib import partsset as ps
 #データをファイルから読み込むためのローダ
-import dataload_new26 as dl
+import learning.archive_nn.dataload as dl
 #motionの種類や使用するファイル数などのパラメータ
-import param as par
+import learning.archive_nn.param as par
 
 #ファイルパス、種類クラスの親まで,/入り
 fp=par.fp

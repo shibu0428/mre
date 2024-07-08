@@ -20,7 +20,7 @@ import sys
 sys.path.append('..')
 from lib import readfile as rf
 from lib import partsset
-from learning import dataload as dl
+from learning.archive_nn import dataload as dl
 #partsのセットを行う
 from lib import partsset as ps
 
