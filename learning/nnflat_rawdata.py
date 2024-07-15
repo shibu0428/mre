@@ -63,7 +63,7 @@ choice_test_motions=[
     "fencing_stand",
 ]
 
-model_save=0        #モデルを保存するかどうか 1なら保存
+model_save=1        #モデルを保存するかどうか 1なら保存
 data_frames=20       #学習1dataあたりのフレーム数
 all_data_frames=2000#元データの読み取る最大フレーム数
 
