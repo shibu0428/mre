@@ -15,7 +15,7 @@ def movefiles():
     7:"scwat",
     8:"fencing_stand",
     }
-    out_folder="0702"
+    out_folder="0710"
     in_path = '*_121DE.csv'
     folder_path='../dataset/rawcsv/'+out_folder+'/'
 

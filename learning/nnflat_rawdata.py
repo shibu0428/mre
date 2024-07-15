@@ -24,27 +24,29 @@ from lib import partsset as ps
 #データをファイルから読み込むためのローダ
 import learning.archive_nn.dataload as dl
 
-# クラス番号とクラス名
 
-dataset_path=["0703","0626"]
+#---------------------------------------------------
+#パラメータここから
+# クラス番号とクラス名
+dataset_path=["0710"]
 
 motions=[
-    #"guruguru_stand",
+    "guruguru_stand",
     "suburi",
     "udehuri",
     "iai",
-    #"sit_stop",
-    #"sit_udehuri",
-    #"stand_nautral",
-    #"scwat",
-    #"fencing_stand",
+    "sit_stop",
+    "sit_udehuri",
+    "stand_nautral",
+    "scwat",
+    "fencing_stand",
 ]
 
 dev=[
     #"0D7A2",
     #"0FC42",
     "12AA1",
-    #"1437E",
+    "1437E",
     #"121DE",
     #"13D54"
 ]
@@ -52,18 +54,24 @@ dev=[
 choice_test_motions=[
     #"guruguru_stand",
     #"suburi",
-    "udehuri",
+    #"udehuri",
     #"iai",
     #"sit_stop",
     #"sit_udehuri",
     #"stand_nautral",
     #"scwat",
-    #"fencing_stand",
+    "fencing_stand",
 ]
 
 model_save=0        #モデルを保存するかどうか 1なら保存
 data_frames=20       #学習1dataあたりのフレーム数
 all_data_frames=2000#元データの読み取る最大フレーム数
+
+choice_mode=1   #テストのチョイスを変更する
+fc1=2048
+fc2=4096
+#パラメータここまで
+#----------------------------------------------------------------------------------
 
 data_cols=7*len(dev)       #1dataの1フレームのデータ数
 data_n_1file=int(all_data_frames/data_frames)
@@ -73,7 +81,7 @@ all_data_n=data_n*len(motions)  #全データ数
 learn_n=int(all_data_frames/data_frames*0.3)*len(dataset_path)  #１モーションの学習のデータ数 3割を学習に
 test_n=data_n-learn_n #１モーションのテストのデータ数   7割をテストに
 
-choice_mode=1   #テストのチョイスを変更する
+
 
 #cudaの準備
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
@@ -104,7 +112,7 @@ for i in range(len(motions)):
             with open('../dataset/'+dataset_path[k]+'/'+motions[i]+'_'+dev[j]+'.csv') as f:
                 reader = csv.reader(f)
                 for row in reader:
-                    if flag<100:
+                    if flag<150:
                         flag+=1
                         continue
                     np_parts[data_check][frame_check]=row[1:]#
@@ -269,8 +277,7 @@ class MLP4(nn.Module):
 
 
 # ネットワークモデル
-fc1=128
-fc2=64
+
 net = MLP4(data_frames*data_cols,fc1,fc2, len(motions)).to(device)
 #torchsummary.summary(net, (1, 28, 28))
 print(net)
