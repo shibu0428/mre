@@ -28,12 +28,12 @@ def rename_csv():
     ]
 
     dev=[
-        "0D7A2",
-        "0FC42",
+        #"0D7A2",
+        #"0FC42",
         "12AA1",
         "1437E",
-        "121DE",
-        "13D54",
+        #"121DE",
+        #"13D54",
     ]
 
     for i in range(len(motions)):
