@@ -5,6 +5,7 @@ import pandas as pd
 import seaborn
 seaborn.set()
 from torch.utils.data import Dataset
+import sys
 
 # PyTorch 関係のほげ
 import torch
@@ -14,6 +15,7 @@ from torchvision.transforms import ToTensor
 from torchvision.datasets import FashionMNIST
 import torchsummary
 import csv
+import torch.nn.functional as F
 
 #自作関数軍
 import sys
@@ -41,7 +43,8 @@ motions=[
     "scwat",
     "fencing_stand",
 ]
-choice_num=2
+args = sys.argv
+choice_num=int(args[1])
 choice_motion=motions[choice_num]
 
 dev=[
@@ -63,7 +66,7 @@ choice_mode=1   #テストのチョイスを変更する
 fc1=2048
 fc2=4096
 
-model_path="C:/Users/tomok/mre/learning/model/0711_model_dev2_20.path"
+model_path="C:/Users/tomok/mre/learning/model/0717_model_dev2_20.path"
 #パラメータここまで
 #----------------------------------------------------------------------------------
 
@@ -144,5 +147,6 @@ for i in range(all_data_frames-21):
     choice_num_tensor = torch.tensor([choice_num] * X.size(0), dtype=torch.long, device=device)  # 正解ラベルをテンソルに変換
     loss = loss_func(Y, choice_num_tensor)  # 正解ラベル lab に対する loss を計算
     loss_value=loss.item()
-    print(Y.argmax(dim=1).item(),",",f"{loss_value:.6f}")
-
+    probabilities = F.softmax(Y, dim=1)
+    max_prob, predicted_label = torch.max(probabilities, dim=1)
+    print(Y.argmax(dim=1).item(),",\t",f"{loss_value:.6f}",',\t',f"{max_prob.item():.6f} ,")
