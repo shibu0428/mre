@@ -289,7 +289,7 @@ loss_func = nn.CrossEntropyLoss(reduction='sum')
 optimizer = torch.optim.Adam(net.parameters(), lr=1e-5)
 
 # 学習の繰り返し回数
-nepoch = 100
+nepoch = 200
 
 # 学習
 results = []
