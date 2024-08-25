@@ -18,5 +18,5 @@ while(1){
 
 
 for($i=0;$i -le 8;$i=$i+1){
-    py model_test_1data.py $i >> $day/pred$i.csv
+    py model_test_1data.py $i >> $dirname/pred$i.csv
 }

@@ -72,8 +72,8 @@ data_frames=20       #学習1dataあたりのフレーム数
 all_data_frames=2000#元データの読み取る最大フレーム数
 
 choice_mode=0   #テストのチョイスを変更する
-fc1=128
-fc2=256
+fc1=1024
+fc2=2048
 #パラメータここまで
 #----------------------------------------------------------------------------------
 
@@ -82,7 +82,7 @@ data_n_1file=int(all_data_frames-data_frames) #重ね合わせなので
 data_n=data_n_1file*len(dataset_path) #1モーションのデータ数
 all_data_n=data_n*len(motions)  #全データ数
 
-learn_n=int(data_n*0.3)  #１モーションの学習のデータ数 3割を学習に
+learn_n=int(data_n*0.1)  #１モーションの学習のデータ数 3割を学習に
 test_n=data_n-learn_n #１モーションのテストのデータ数   7割をテストに
 
 
