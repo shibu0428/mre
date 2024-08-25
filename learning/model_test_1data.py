@@ -100,7 +100,7 @@ for j in range(len(dev)):
                 np_dataset[:,7*j:7*(j+1)]=np_parts
                 break
         #print(np_parts)
-print(np_dataset.shape)
+#print(np_dataset.shape)
 
 
 class MLP4(nn.Module):
@@ -148,4 +148,4 @@ for i in range(all_data_frames-21):
     loss_value=loss.item()
     probabilities = F.softmax(Y, dim=1)
     max_prob, predicted_label = torch.max(probabilities, dim=1)
-    #print(Y.argmax(dim=1).item(),",\t",f"{loss_value:.6f}",',\t',f"{max_prob.item():.6f} ,")
+    print(Y.argmax(dim=1).item(),",\t",f"{loss_value:.6f}",',\t',f"{max_prob.item():.6f} ,")
