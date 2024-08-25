@@ -67,9 +67,9 @@ model_save=1        #モデルを保存するかどうか 1なら保存
 data_frames=20       #学習1dataあたりのフレーム数
 all_data_frames=2000#元データの読み取る最大フレーム数
 
-choice_mode=1   #テストのチョイスを変更する
-fc1=2048
-fc2=4096
+choice_mode=0   #テストのチョイスを変更する
+fc1=128
+fc2=128
 #パラメータここまで
 #----------------------------------------------------------------------------------
 
@@ -228,13 +228,13 @@ def printdata(m_size,parts):
   ax[0].plot(data[:, 0], data[:, 1], '.-', label='training data')
   ax[0].plot(data[:, 0], data[:, 2], '.-', label='test data')
   ax[0].axhline(0.0, color='gray')
-  ax[0].set_ylim(-0.05, 1.75)
+  ax[0].set_ylim(-0.05, 3.75)
   ax[0].legend()
   ax[0].set_title(f'loss')
   ax[1].plot(data[:, 0], data[:, 3], '.-', label='training data')
   ax[1].plot(data[:, 0], data[:, 4], '.-', label='test data')
   ax[1].axhline(1.0, color='gray')
-  ax[1].set_ylim(0.35, 1.01)
+  ax[1].set_ylim(0.10, 1.01)
   ax[1].legend()
   ax[1].set_title(f'accuracy')
   fig.suptitle('modelSize'+str(m_size)+'dev'+str(parts))
