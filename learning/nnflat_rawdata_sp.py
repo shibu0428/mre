@@ -54,6 +54,7 @@ dev=[
 ]
 
 
+
 choice_test_motions=[
     "guruguru_stand",
     "suburi",
