@@ -1,3 +1,5 @@
+#nnflatの重ね合わせver
+
 # 準備あれこれ
 import numpy as np
 import matplotlib.pyplot as plt
@@ -67,18 +69,18 @@ model_save=1        #モデルを保存するかどうか 1なら保存
 data_frames=20       #学習1dataあたりのフレーム数
 all_data_frames=2000#元データの読み取る最大フレーム数
 
-choice_mode=1   #テストのチョイスを変更する
-fc1=2048
-fc2=4096
+choice_mode=0   #テストのチョイスを変更する
+fc1=128
+fc2=256
 #パラメータここまで
 #----------------------------------------------------------------------------------
 
 data_cols=7*len(dev)       #1dataの1フレームのデータ数
-data_n_1file=int(all_data_frames/data_frames)
+data_n_1file=int(all_data_frames-data_frames) #重ね合わせなので
 data_n=data_n_1file*len(dataset_path) #1モーションのデータ数
 all_data_n=data_n*len(motions)  #全データ数
 
-learn_n=int(all_data_frames/data_frames*0.3)*len(dataset_path)  #１モーションの学習のデータ数 3割を学習に
+learn_n=int(data_n*0.3)  #１モーションの学習のデータ数 3割を学習に
 test_n=data_n-learn_n #１モーションのテストのデータ数   7割をテストに
 
 
@@ -89,45 +91,50 @@ print(device)
 print(torch.cuda.is_available())
 
 
+
+
 #データロード開始
+#path複数未対応
+#np_all_dataに全フレーム&モーションを入れてから分解する
 print("data load now!")
+np_all_data=np.zeros((len(motions),all_data_frames+data_frames,data_cols))
+frame=0
+frame_check=0
+data_check=0
+for i in range(len(motions)):
+    for j in range(len(dev)):
+        frame=0
+        frame_check=0
+        data_check=0
+        for k in range(len(dataset_path)):
+            with open('../dataset/'+dataset_path[k]+'/'+motions[i]+'_'+dev[j]+'.csv') as f:
+                reader = csv.reader(f)
+                for row in reader:
+                    if frame_check<150:
+                        frame_check+=1
+                        continue
+                    np_all_data[i][frame][j*7:(j+1)*7]=row[1:]#
+                    frame+=1
+                    if frame>all_data_frames+data_frames-1:
+                        break
+print("all_data_shape=",np_all_data.shape)
+
+
+
 np_data=np.zeros((learn_n*len(motions),data_frames,data_cols))
 np_data_label=np.zeros(learn_n*len(motions))
 np_Tdata=np.zeros((test_n*len(motions),data_frames,data_cols))
 np_Tdata_label=np.zeros(test_n*len(motions))
 
+print('np_data_shape=',np_data.shape)
 
-
-#0705未対応
-#ファイル読み込みのフォルダ二個目に注意
-np_parts=np.zeros((data_n,data_frames,7))
-frame_check=0
-data_check=0
 for i in range(len(motions)):
-    for j in range(len(dev)):
-        frame_check=0
-        data_check=0
-        for k in range(len(dataset_path)):
-            flag=0
-            with open('../dataset/'+dataset_path[k]+'/'+motions[i]+'_'+dev[j]+'.csv') as f:
-                reader = csv.reader(f)
-                for row in reader:
-                    if flag<150:
-                        flag+=1
-                        continue
-                    np_parts[data_check][frame_check]=row[1:]#
-                    frame_check+=1
-                    if frame_check==data_frames:
-                        frame_check=0
-                        data_check+=1
-                        if data_check==data_n:
-                            data_check=0
-                            continue
-                
-        #print(np_parts)
-        np_data[learn_n*i:learn_n*(i+1),0:data_frames,j*7:(j+1)*7]=np_parts[0:learn_n]
-        np_Tdata[test_n*i:test_n*(i+1),0:data_frames,j*7:(j+1)*7]=np_parts[learn_n:data_n]
+    for f in range(learn_n):
+        np_data[i*learn_n+f]=np_all_data[i][f:f+data_frames]
 
+for i in range(len(motions)):
+    for f in range(test_n):
+        np_Tdata[i*test_n+f]=np_all_data[i][f+learn_n:f+data_frames+learn_n]
 
 #ラベルセット
 for i in range(len(motions)):
