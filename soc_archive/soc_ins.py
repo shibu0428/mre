@@ -9,7 +9,7 @@ dof_parts=7 #つかうデータ=0,1,2,3==クォータニオン->dof=4
             #4,5,6=position->dof=7
 
 host = ''
-port = 52353
+port = 5000
 
 outfile=input("output file name?")
 
@@ -38,8 +38,8 @@ while True:
         data, addr = udp_socket.recvfrom(buffer_size)
         #if(len(data)>1600):raise Exception(f)
         with open(outfile+str(n)+'.txt', mode='a') as f:
-            data2=data.split(b'tran')
-            data3=data2.split(b'')
+            #data2=data.split(b'tran')
+            #data3=data2.split(b'')
             f.write(str(data))
             f.write(f"\n")
             f.close()
