@@ -3,7 +3,7 @@ import struct
 
 # UDPの受信設定
 udp_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-udp_socket.bind(("10.20.153.194", 5002))  # IPアドレスを指定してバインド
+udp_socket.bind(("192.168.68.54", 5002))  # IPアドレスを指定してバインド
 
 
 print("Waiting for UDP data...")
